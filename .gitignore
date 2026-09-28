@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+build/
+*.egg-info/
+
+# Node / Vite（フロントエンドを追加した場合）
+node_modules/
+dist/
+
+# 環境変数・秘密情報（コミット禁止）
+.env
+.env.*
+!.env.example
+
+# データファイル（個人情報の誤コミット防止）
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.db
+*.sqlite3
+data/
+
+# Claude Code の個人設定（.claude/settings.json はチーム共有のためコミットする）
+.claude/settings.local.json
+CLAUDE.local.md
+
+# エディタ・OS
+.idea/
+.vscode/
+Thumbs.db
+desktop.ini

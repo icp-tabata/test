@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(ruff *)",
+      "Bash(pytest *)",
+      "Bash(python -m ruff *)",
+      "Bash(python -m pytest *)",
+      "Bash(pip-audit *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "PowerShell(ruff *)",
+      "PowerShell(pytest *)",
+      "PowerShell(python -m ruff *)",
+      "PowerShell(python -m pytest *)",
+      "PowerShell(pip-audit *)",
+      "PowerShell(git status *)",
+      "PowerShell(git diff *)",
+      "PowerShell(git log *)",
+      "PowerShell(git show *)",
+      "PowerShell(git branch *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "PowerShell(git push --force *)",
+      "PowerShell(git push -f *)"
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "figma@claude-plugins-official": false
+  }
+}

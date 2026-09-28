@@ -1,0 +1,30 @@
+[project]
+name = 'healthsupportbank'
+version = '0.1.0'
+description = '健康応援口座システム'
+requires-python = '>=3.12'
+
+[tool.ruff]
+line-length = 100
+target-version = 'py312'
+
+[tool.ruff.format]
+quote-style = 'single'                 # 文字列はシングルクォート
+# ドキュメント内のコード例（Markdown）は整形対象外にする（CIを不必要に落とさない）
+exclude = ['docs/**']
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, isort, pyupgrade, bugbear, bandit(セキュリティ)
+select = ['E', 'F', 'I', 'UP', 'B', 'S']
+
+[tool.ruff.lint.per-file-ignores]
+# テストでは assert の使用を許可する
+'tests/**' = ['S101']
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI の Depends/Query/Header 等は引数デフォルトでの呼び出しが正しい使い方
+extend-immutable-calls = ['fastapi.Depends', 'fastapi.Query', 'fastapi.Header']
+
+[tool.pytest.ini_options]
+pythonpath = ['src']
+testpaths = ['tests']

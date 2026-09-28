@@ -1,0 +1,2 @@
+# 実行時の依存関係
+# 技術スタック確定後に追記する（例: fastapi, uvicorn, sqlalchemy, pydantic-settings）
