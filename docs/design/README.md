@@ -20,6 +20,7 @@
   - 修正した内容は、その Excel ファイルの「変更履歴」シートに書く。
   - 写しは `design/<画面ID>` ブランチに載せる（`.gitignore` は `docs/design/` 配下の xlsx を除外しない）。push はユーザーが明示的に指示したときだけ行う。
   - 修正前のバックアップは要らない（原本を修正しないため）。
+  - 手順は `tbd-resolver` スキル（`.claude/skills/tbd-resolver/`）による。
 - md は Claude Code だけが作成・修正する。人は md を直接修正しない。
 - 設計書または画面のモックを改訂した場合は、改訂した箇所を変更内容に書き、`screen-design-orchestrator`（バッチの場合は `batch-design-orchestrator`）に変更として依頼する。変更履歴は Claude Code が書く。
 - 修正の前に小寺へ相談するかは、次による。
