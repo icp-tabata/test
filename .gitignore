@@ -23,6 +23,7 @@ dist/
 *.tsv
 *.xlsx
 *.xls
+!docs/design/**/*.xlsx
 *.db
 *.sqlite3
 data/
