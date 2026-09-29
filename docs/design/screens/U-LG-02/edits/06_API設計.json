@@ -1,0 +1,37 @@
+{
+    "book":  "06_API設計.xlsx",
+    "source":  {
+                   "lastWriteUtc":  "2026-09-27T22:38:00.0000000Z",
+                   "sha256":  "FEAE9E2241AE607AEFA66E9450FF8915F59179E55103844852679142511E9DA7"
+               },
+    "edits":  [
+                  {
+                      "tbd":  "TBD-001",
+                      "sheet":  "API定義",
+                      "cell":  "D200",
+                      "before":  "■A105 POST /api/member-verifications/email",
+                      "after":  "■A105 POST /api/member-verifications/email（テスト）",
+                      "value":  "■A105 POST /api/member-verifications/email（テスト）",
+                      "redText":  "（テスト）"
+                  },
+                  {
+                      "tbd":  "TBD-006",
+                      "sheet":  "API定義",
+                      "cell":  "AL211",
+                      "before":  "メールアドレス。個別の通知および確認コードの送信先となる",
+                      "after":  "メールアドレス。254桁以内。個別の通知および確認コードの送信先となる",
+                      "value":  "メールアドレス。254桁以内。個別の通知および確認コードの送信先となる",
+                      "redText":  "254桁以内。"
+                  }
+              ],
+    "histories":  [
+                      {
+                          "tbd":  "TBD-001",
+                          "content":  "【U-LG-02 TBD-001】API定義 D200 の見出しに A105 の名称「テスト」を追記した"
+                      },
+                      {
+                          "tbd":  "TBD-006",
+                          "content":  "【U-LG-02 TBD-006】API定義 AL211（A105 の email）に桁数「254桁以内」を追記した"
+                      }
+                  ]
+}
