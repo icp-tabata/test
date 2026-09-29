@@ -20,7 +20,7 @@
        不一致・要確認が 1件でもある TBD、変更履歴の記録が無い TBD は、1セルも書かない
        同じセルを複数の TBD が直す場合、後の TBD は前の TBD の反映後の値で判定する
     2. 結果の一覧を出し、「反映する」の入力を求める
-    3. 原本を docs\design\_backup\<日時>\ に複製する（一覧を出した時点から原本が変わっていれば止まる）
+    3. 原本を <成果物フォルダ>\_backup\<ID>_<日時>_pre-apply\ に複製する（一覧を出した時点から原本が変わっていれば止まる）
     4. 書き込み用に開き直して判定をやり直し、変わっていれば保存せずに止まる
     5. 書けるセルだけを書き、赤字（FF0000）にし、変更履歴シートに 1行足す（1回の実行で版を 0.1 上げる）
     6. 保存の前に書いた値を確かめ、保存後にも原本を開き直して確かめる
@@ -217,7 +217,16 @@ function Read-Json([string]$path) {
 
 # --- 記録を読む ---
 $mp = (Resolve-Path -LiteralPath $Manifest).Path
+$editsDir = Split-Path $mp -Parent
+if ((Split-Path $editsDir -Leaf) -ne 'edits') {
+    throw "記録ファイルは <成果物フォルダ>\edits\ の下にある必要があります（バックアップ先を決められません）: $mp"
+}
+$artifactDir = Split-Path $editsDir -Parent
+$artifactId = Split-Path $artifactDir -Leaf
 $m = Read-Json $mp
+if ($m.author) {
+    $Applier = [string]$m.author
+}
 $edits = @($m.edits)
 $histories = @($m.histories)
 $ledgerPath = Join-Path (Split-Path $mp -Parent) ([System.IO.Path]::GetFileNameWithoutExtension($mp) + '.applied.json')
@@ -405,7 +414,7 @@ if ($ans -ne '反映する') {
 }
 
 # --- 3. バックアップ ---
-$backupDir = Join-Path $RepoRoot ('docs\design\_backup\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
+$backupDir = Join-Path $artifactDir ('_backup\' + $artifactId + '_' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '_pre-apply')
 New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
 $backup = Join-Path $backupDir ([System.IO.Path]::GetFileName($original))
 Copy-Item -LiteralPath $original -Destination $backup

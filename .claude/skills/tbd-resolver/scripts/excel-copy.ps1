@@ -13,7 +13,7 @@
     copy    -Source <原本> -Kind screens|batches -Id <画面ID/バッチID>
     read    -Path <xlsx> -Sheet <シート名> -Range <A1:C3>
     edit    -Path <写し> -Tbd <TBD-001> -Sheet <シート名> -Cell <A1> -Value <新しい値> [-RedText <赤字にする部分>]
-    history -Path <写し> -Content <【ID TBD-番号】内容>
+    history -Path <写し> -Content <【ID TBD-番号】内容> -Author <変更者の名称（ユーザーに聞いた値）>
     list-history -Path <xlsx>
 #>
 param(
@@ -28,13 +28,13 @@ param(
     [string]$Cell,
     [string]$Value,
     [string]$RedText,
-    [string]$Content
+    [string]$Content,
+    [string]$Author
 )
 
 $ErrorActionPreference = 'Stop'
 
 $HistorySheet = '変更履歴'
-$HistoryAuthor = 'Claude'
 # 変更履歴シートの列（01〜15 で共通。A=版、E=変更日、L=内容、BB=変更者。見出しは7行目）
 $HistoryHeaderRow = 7
 # FF0000（RGB）。Excel の Color は BGR の整数で持つため 255 になる
@@ -130,7 +130,11 @@ function Read-Manifest([string]$bookPath) {
     if ($m -and $m.source) {
         $source = $m.source
     }
-    return @{ Edits = $edits; Histories = $histories; Source = $source }
+    $author = $null
+    if ($m -and $m.author) {
+        $author = [string]$m.author
+    }
+    return @{ Edits = $edits; Histories = $histories; Source = $source; Author = $author }
 }
 
 function Write-Manifest([string]$bookPath, $manifest) {
@@ -139,6 +143,7 @@ function Write-Manifest([string]$bookPath, $manifest) {
     $obj = [ordered]@{
         book      = [System.IO.Path]::GetFileName($bookPath)
         source    = $manifest.Source
+        author    = $manifest.Author
         edits     = @($manifest.Edits)
         histories = @($manifest.Histories)
     }
@@ -318,9 +323,16 @@ switch ($Mode) {
             throw 'history の -Content は【<ID> TBD-番号】で始めてください'
         }
         $histTbd = $Matches[1]
+        if (-not $Author -or -not $Author.Trim()) {
+            throw 'history には -Author（変更者の名称。ユーザーに聞いた値）が必要です'
+        }
+        $Author = $Author.Trim()
         $mf = Read-Manifest $p
         if ($mf.Histories | Where-Object { $_.tbd -eq $histTbd }) {
             throw "$histTbd の変更履歴は既に追記済みです（二重に追記しない）"
+        }
+        if ($mf.Author -and $mf.Author -cne $Author) {
+            throw "この写しの変更者は「$($mf.Author)」で記録されています。違う名称（「$Author」）は使えません。名称を変える場合はユーザーに確認してください"
         }
         $xl, $wb = Open-Book $p $false
         $save = $false
@@ -332,12 +344,11 @@ switch ($Mode) {
             }
             $lastRow = $rows[-1].Row
             $lastVer = ($rows | Where-Object { $_.Version } | Select-Object -Last 1).Version
-            $lastAuthor = ($rows | Where-Object { $_.Author } | Select-Object -Last 1).Author
             if (-not $lastVer) {
                 throw '変更履歴に版の入った行がありません'
             }
-            # 写しでの修正はすべて同じ版にする（最初の修正で1つ上げ、以降は据え置く）
-            if ($lastAuthor -eq $HistoryAuthor) {
+            # 写しでの修正はすべて同じ版にする（最初の修正で1つ上げ、以降は据え置く）。追記済みかは記録ファイルで判定する
+            if ($mf.Histories.Count -gt 0) {
                 $ver = $lastVer
             }
             else {
@@ -356,7 +367,7 @@ switch ($Mode) {
             $ws.Range("E$r").Value2 = [double](Get-Date).Date.ToOADate()
             $ws.Range("E$r").NumberFormat = $ws.Range("E$lastRow").NumberFormat
             $ws.Range("L$r").Value2 = $Content
-            $ws.Range("BB$r").Value2 = $HistoryAuthor
+            $ws.Range("BB$r").Value2 = $Author
             $save = $true
             "変更履歴に追記: 行 $r（版 $ver）: $Content"
         }
@@ -365,6 +376,7 @@ switch ($Mode) {
         }
         $mf = Read-Manifest $p
         [void]$mf.Histories.Add([pscustomobject]@{ tbd = $histTbd; content = $Content })
+        $mf.Author = $Author
         Write-Manifest $p $mf
     }
     'list-history' {
