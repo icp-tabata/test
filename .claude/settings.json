@@ -28,7 +28,9 @@
       "Bash(git push --force *)",
       "Bash(git push -f *)",
       "PowerShell(git push --force *)",
-      "PowerShell(git push -f *)"
+      "PowerShell(git push -f *)",
+      "Bash(*excel-apply*)",
+      "PowerShell(*excel-apply*)"
     ]
   },
   "enabledPlugins": {

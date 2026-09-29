@@ -24,6 +24,8 @@ dist/
 *.xlsx
 *.xls
 !docs/design/**/*.xlsx
+# 原本へ反映する前のバックアップ（excel-apply.ps1 が作る）
+docs/design/_backup/
 *.db
 *.sqlite3
 data/
