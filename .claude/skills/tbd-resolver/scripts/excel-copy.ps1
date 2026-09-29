@@ -345,8 +345,9 @@ switch ($Mode) {
             }
             $r = $lastRow + 1
             foreach ($col in 'A', 'E', 'L', 'BB') {
-                if ($ws.Range("$col$r").MergeCells) {
-                    throw "追記先の行が結合セルです: $col$r"
+                $c = $ws.Range("$col$r")
+                if ($c.MergeCells -and ($c.MergeArea.Row -ne $c.Row -or $c.MergeArea.Column -ne $c.Column)) {
+                    throw "追記先が結合セルの左上ではありません: $col$r"
                 }
             }
             $ws.Range("A$r").NumberFormatLocal = '@'

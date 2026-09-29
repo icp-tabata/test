@@ -467,8 +467,9 @@ try {
             }
             $r = $lastRow + 1
             foreach ($col in 'A', 'E', 'L', 'BB') {
-                if ($hws.Range("$col$r").MergeCells) {
-                    throw "変更履歴の追記先が結合セルです: $col$r"
+                $c = $hws.Range("$col$r")
+                if ($c.MergeCells -and ($c.MergeArea.Row -ne $c.Row -or $c.MergeArea.Column -ne $c.Column)) {
+                    throw "変更履歴の追記先が結合セルの左上ではありません: $col$r"
                 }
             }
             $hws.Range("A$r").NumberFormatLocal = '@'
